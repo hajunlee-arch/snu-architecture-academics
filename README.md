@@ -30,7 +30,7 @@ npm run preview
 
 ## 게시와 도메인
 
-`npm run build:static`의 출력 폴더는 `site-dist/`입니다. 이를 정적 호스팅에 배포할 수 있습니다. GitHub Pages를 사용할 경우 GitHub Actions에서 이 폴더를 게시하도록 설정해야 합니다. 현재 저장소에는 자동 배포가 설정되어 있지 않습니다.
+`npm run build:static`의 출력 폴더는 `site-dist/`입니다. `.github/workflows/deploy-pages.yml`이 main의 학생 화면·자료 변경을 자동 빌드·검사하고 GitHub Pages에 게시합니다. 저장소 Settings → Pages → Source는 **GitHub Actions**로 설정해야 기존 브랜치 직접 게시와 충돌하지 않습니다. 실행 방법과 도메인 DNS 설정은 [배포·도메인 안내](docs/DEPLOYMENT.md)를 참고하세요.
 
 - GitHub Pages: https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages
 - 사용자 도메인 연결: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site
