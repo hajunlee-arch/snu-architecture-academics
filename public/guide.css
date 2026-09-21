@@ -38,3 +38,8 @@
 .reference-section th{white-space:normal}
 #show-korean{font:inherit;border:1px solid var(--ink);background:white;padding:9px 16px;cursor:pointer}
 @media print{.reference-section .table-wrap table:not(.curriculum-table){min-width:0;font-size:12px}.reference-section th,.reference-section td{padding:6px}}
+.general-course-table{min-width:900px!important}
+.general-course-table tbody th,.general-course-table .ge-area-credits{vertical-align:middle}
+.general-course-table .ge-course-code{white-space:nowrap;font-size:14px;font-variant-numeric:tabular-nums}
+.general-course-table .ge-area-credits{text-align:center;font-weight:600}
+@media print{.general-course-table{min-width:0!important}.general-course-table .ge-course-code{font-size:12px}}

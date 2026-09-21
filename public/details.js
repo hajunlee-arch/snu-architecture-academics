@@ -12,6 +12,55 @@ function render(){if(['general','multi','abeek'].includes(tab)){renderReferenceP
 }
 function requirementNotes(items){return '<div class="table-notes"><ul>'+items.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul></div>';}
 function referenceSection(title,notes,headers,rows,intro=''){return '<section class="reference-section"><h2>'+esc(title)+'</h2>'+intro+requirementNotes(notes)+table(headers,rows)+'</section>';}
+// Google Sheets comparison: 시트1, rows 3, 6 and 96–131 (2024 and earlier / 2025 / 2026).
+// Keep identifiers as text, including the legacy numeric strings shown in the sheet.
+const generalCourseNumbers={
+ writing1:['L0440.000600','F11.101','F11.101'],writing2:['L0440.000900','F11.203','F11.203'],
+ math1:['L0442.000100','F31.104','F31.104'],mathPractice1:['L0442.000200','F31.104L','F31.104L'],
+ math2:['L0442.000300','F31.105','F31.105'],mathPractice2:['L0442.000400','F31.105L','F31.105L'],
+ advancedMath1:['L0442.000500','F31.106','F31.106'],advancedMathPractice1:['L0442.000600','F31.106L','F31.106L'],
+ advancedMath2:['L0442.000700','F31.107','F31.107'],advancedMathPractice2:['L0442.000800','F31.107L','F31.107L'],
+ engineeringMath1:['33.014','F31.201','F31.201'],engineeringMath2:['33.015','F31.202','F31.202'],
+ physics1:['34.001','F33.106','F33.106'],physicsLab1:['34.009','F33.106L','F33.106L'],
+ basicPhysics1:['34.005','F33.103','F33.103'],advancedPhysics1:['34.003','F33.108','F33.108'],
+ statistics:['33.019','F32.102','F32.102'],statisticsLab:['33.02','F32.102L','F32.102L']
+};
+function generalCourseRows(y,en,groups){
+ const t=(ko,english)=>en?english:ko,period=y>=2026?2:y===2025?1:0;
+ const time=(g,s)=>t(g+'학년 '+s+'학기','Year '+g+', semester '+s);
+ const item=(key,ko,english,timing)=>[key?generalCourseNumbers[key][period]:t('시트 미수록','Not listed in sheet'),t(ko,english),timing];
+ const unspecified=t('—','—'),scienceTime=t('1학년 또는 2학년 1학기','Year 1 or 2, semester 1');
+ const writing=y>=2019?[
+  item('writing1','대학 글쓰기 1','College Writing 1',time(1,1)),
+  item('writing2','대학 글쓰기 2: 과학기술글쓰기','College Writing 2: Writing in Science & Technology',time(1,2))
+ ]:[item(null,'글쓰기의 기초 (두 과목 중 택1)','Foundations of Writing (choose one of the two)',groups[0][4]),item(null,'과학과 기술 글쓰기 (두 과목 중 택1)','Writing in Science and Technology (choose one of the two)',groups[0][4])];
+ const mathematics=y>=2020?[
+  item('engineeringMath1','공학수학 1','Engineering Mathematics 1',time(1,1)),
+  item('math1','수학 1','Calculus 1',time(1,2)),item('mathPractice1','수학연습 1','Calculus Practice 1',time(1,2)),
+  item('engineeringMath2','공학수학 2','Engineering Mathematics 2',time(2,1))
+ ]:[
+  item('math1','수학 1','Calculus 1',unspecified),item('mathPractice1','수학연습 1','Calculus Practice 1',unspecified),
+  item('math2','수학 2','Calculus 2',unspecified),item('mathPractice2','수학연습 2','Calculus Practice 2',unspecified),
+  item('engineeringMath1','공학수학 1','Engineering Mathematics 1',unspecified),
+  item('advancedMath1','고급수학 1 (대체 선택)','Honors Calculus 1 (alternative)',unspecified),
+  item('advancedMathPractice1','고급수학연습 1 (대체 선택)','Honors Calculus Practice 1 (alternative)',unspecified),
+  item('advancedMath2','고급수학 2 (대체 선택)','Honors Calculus 2 (alternative)',unspecified),
+  item('advancedMathPractice2','고급수학연습 2 (대체 선택)','Honors Calculus Practice 2 (alternative)',unspecified)
+ ];
+ const science=[
+  item('physics1','물리학 1','Physics 1',scienceTime),item('physicsLab1','물리학실험 1','Physics Lab 1',scienceTime),
+  item('statistics','통계학','Statistics',scienceTime),item('statisticsLab','통계학실험','Statistics Lab',scienceTime),
+  item('basicPhysics1','물리의 기본 1 (물리학 1 대체 선택)','Foundation of Physics 1 (alternative to Physics 1)',scienceTime),
+  item('advancedPhysics1','고급물리학 1 (물리학 1 대체 선택)','Honors Physics 1 (alternative to Physics 1)',scienceTime),
+  [unspecified,t('과학 영역 선택과목·실험 (4학점)','Science electives and labs (4 credits)'),groups[3][4]]
+ ];
+ const courses=[writing,[[unspecified,groups[1][2],groups[1][4]]],mathematics,science];
+ const body=groups.map((group,i)=>{
+  const entries=courses[i]||[[unspecified,group[2],group[4]]];
+  return entries.map(([id,name,timing],j)=>'<tr>'+(j===0?'<th scope="rowgroup" rowspan="'+entries.length+'">'+esc(group[0])+'</th><th scope="rowgroup" rowspan="'+entries.length+'">'+esc(group[1])+'</th>':'')+'<td class="ge-course-code">'+esc(id)+'</td><td>'+esc(name)+'</td>'+(j===0?'<td class="ge-area-credits" rowspan="'+entries.length+'">'+esc(group[3])+'</td>':'')+'<td>'+esc(timing)+'</td></tr>').join('');
+ }).join('');
+ return '<div class="table-wrap" role="region" tabindex="0" aria-label="'+esc(t('교양 교과목별 이수표','General education course table'))+'"><table class="general-course-table"><thead><tr>'+[t('구분','Category'),t('영역','Area'),t('교과목번호','Course number'),t('교과목·이수 기준','Course / requirement'),t('영역 이수학점','Required area credits'),t('권장 이수 시기','Recommended timing')].map(h=>'<th scope="col">'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+body+'</tbody></table></div>';
+}
 function generalEducation(y,en){
  const t=(ko,english)=>en?english:ko;
  const recognition='<div class="table-notes"><h3>'+esc(t('공통교육과정 영역 인정','General education area recognition'))+'</h3><p>'+esc(t('영역 인정은 본인의 입학년도 이수규정을 따릅니다. 입학 후 신설된 교과목도 해당 영역이 있으면 영역 학점으로, 없으면 영역 필수 이수에는 포함하지 않고 전체 교양학점으로만 인정됩니다.','Area recognition follows the requirements for your admission year. Newly introduced courses count toward an area if it exists in those requirements; otherwise, they count only toward total GE credits, not required area credits.'))+'</p><p>'+esc(t('단, 동일·대체 지정 교과목은 기존 교과목의 개편 이전 영역으로 인정됩니다.','For designated equivalent or replacement courses, the original course’s area before the curriculum revision applies.'))+'</p><a href="https://docs.google.com/spreadsheets/d/1-B9p6ldLxJypErJfw_39bv9GQ4GZHJmuAyQTvvQra28/edit?usp=sharing" target="_blank" rel="noopener noreferrer">'+esc(t('영역 인정 관련 자료 보기 (Google Sheets, 새 창)','View area recognition reference (Google Sheets, new tab)'))+'</a></div>';
@@ -28,7 +77,9 @@ function generalEducation(y,en){
  if(y>=2025){for(const [ko,english]of [['문화 해석과 상상','Cultural Interpretation and Imagination'],['역사적 탐구와 철학적 사유','Historical Inquiry and Philosophical Thinking'],['인간의 이해와 사회 분석','Understanding Humans and Society']])rows.push([t('지성의 열쇠','Claves'),t(ko,english),t('해당 영역 교과목','Courses in this area'),'3','—']);rows.push([t('베리타스','Veritas'),t('베리타스','Veritas'),t('베리타스 강좌 1·2 또는 베리타스 실천 영역에서 이수','Veritas Lecture 1, Veritas Lecture 2, or Veritas Practice'),'3','—']);}
  else rows.push([t('학문의 세계','Worlds of Knowledge'),t('언어와 문학 / 문화와 예술 / 역사와 철학 / 정치와 경제 / 인간과 사회','Language and Literature / Culture and Art / History and Philosophy / Politics and Economy / Human and Society'),t(y===2024?'5개 영역 중 4개 이상 이수':y>=2020?'5개 영역 중 3개 이상 이수':'언어와 문학·문화와 예술·역사와 철학 각 3학점 및 정치와 경제/인간과 사회 영역 3학점', 'Complete courses in at least four of the five areas'),'12','—']);
  rows.push([t('전체 교양','All GE courses'),t('총 이수학점','Total credits'),t('부족한 학점은 전체 교양 교과목 중 선택','Select additional GE courses as needed'),t('40 이상','40 or more'),'—']);
- return referenceSection(t('교양 이수 기준','General education requirements')+' · '+y,notes,[t('구분','Category'),t('영역','Area'),t('필수과목·이수 기준','Required courses and requirements'),t('학점','Credits'),t('권장 이수 시기','Recommended timing')],rows,recognition);
+ notes.push(t('교과목번호는 선택한 기준 연도에 따라 비교표의 2024학년도 이전·2025학년도·2026학년도 번호를 표시합니다. 실제 수강 시에는 개설 학년도의 번호를 확인하세요. 비교표에 없는 과목은 번호를 임의로 부여하지 않았습니다.','Course numbers follow the comparison sheet’s pre-2025, 2025 and 2026 columns for the selected reference year. Check the offering-year number when registering. Numbers absent from the sheet are marked as not listed.'));
+ notes.push(t('학점은 개별 과목 학점이 아닌 영역별 이수 기준입니다. 과학·통계는 물리·통계 및 실험 필수 8학점과 과학 선택 4학점으로 구성됩니다. 대체 선택 과목을 모두 이수해야 하는 것은 아닙니다.','Credits are area requirements, not individual course credits. Science requires 8 credits in physics/statistics including labs, plus 4 elective science credits. Alternative courses are options, not additional requirements.'));
+ return '<section class="reference-section"><h2>'+esc(t('교양 이수 기준','General education requirements')+' · '+y)+'</h2>'+recognition+requirementNotes(notes)+generalCourseRows(y,en,rows)+'</section>';
 }
 function referenceCourse(id){
  const records=curricula.filter(r=>r.lang==='ko').sort((a,b)=>b.start-a.start);
