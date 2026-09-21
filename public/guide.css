@@ -31,3 +31,10 @@
 @media(max-width:900px){.curriculum-course{grid-template-columns:1fr;gap:2px}}
 @media(max-width:650px){.table-notes{padding:16px}.table-wrap table:not(.curriculum-table){min-width:440px}.curriculum-table .year-column{width:80px}}
 @media print{.table-wrap{overflow:visible}.curriculum-table{min-width:0;font-size:12px}.curriculum-course{grid-template-columns:1fr}.curriculum-course strong,.course-code,.course-credits{font-size:12px}thead{display:table-header-group}tr{break-inside:avoid}.table-notes{background:white}}
+.reference-section{margin:32px 0 48px}
+.reference-section .table-wrap table:not(.curriculum-table){min-width:760px}
+.reference-section td{overflow-wrap:anywhere}
+.reference-section td:first-child{font-weight:600;min-width:85px}
+.reference-section th{white-space:normal}
+#show-korean{font:inherit;border:1px solid var(--ink);background:white;padding:9px 16px;cursor:pointer}
+@media print{.reference-section .table-wrap table:not(.curriculum-table){min-width:0;font-size:12px}.reference-section th,.reference-section td{padding:6px}}
