@@ -1,6 +1,6 @@
 function render(){if(['general','multi','abeek'].includes(tab)){renderReferencePage();return;}renderSummary();if(!curricula)return;const y=+$('#year').value,en=$('#lang').value==='en';if(tab==='major'){
  const r=curricula.find(r=>r.track===$('#track').value&&r.lang===$('#lang').value&&y>=r.start&&y<=r.end);if(!r)return;
- const p=document.createElement('section');p.innerHTML=`<h2>${text('학년·학기별 전공 이수표','Curriculum by year and semester')}</h2><div class="table-notes"><h3>${text('세부 이수사항','Detailed requirements')}</h3><ul>${r.requirements.map(t=>`<li>${esc(t)}</li>`).join('')}</ul><p>${text('전필은 전공필수이며, 괄호 안 숫자는 학점입니다.','Required courses are marked; credits appear in parentheses.')}</p></div><input class="search-courses" id="course-search" type="search" aria-label="${text('교과목 검색','Search courses')}" placeholder="${text('교과목명 또는 교과목번호','Course title or number')}"><div id="curriculum-grid"></div><p class="source-info">${esc(text('기준 자료: ','Source: ')+r.source+' · p.'+r.page)}</p>`;
+ const p=document.createElement('section');p.innerHTML=`<h2>${text('학년·학기별 전공 이수표','Curriculum by year and semester')}</h2><div class="table-notes"><h3>${text('세부 이수사항','Detailed requirements')}</h3><ul>${r.requirements.map(t=>`<li>${esc(t)}</li>`).join('')}</ul><p>${text('전필은 전공필수이며, 괄호 안 숫자는 학점입니다.','Required courses are marked; credits appear in parentheses.')}</p></div><input class="search-courses" id="course-search" type="search" aria-label="${text('교과목 검색','Search courses')}" placeholder="${text('교과목명 또는 교과목번호','Course title or number')}"><div id="curriculum-grid"></div>`;
  $('#result').appendChild(p);
  const draw=()=>{const q=$('#course-search').value.trim().toLowerCase();let count=0;
  const rows=Array.from({length:r.track==='architecture'?5:4},(_,i)=>i+1).map(g=>{
@@ -72,6 +72,5 @@ function renderReferencePage(){
  }
  if(!source())return;
  const body=tab==='general'?generalEducation(y,en):tab==='multi'?multipleMajors(y):engineeringAccreditation();
- const sourceName=tab==='general'?(en?'General Education_Credit Requirements_DAAE_2024~2026.pdf':'★서울대_건축학과_교양학점배분구조표_통합교과과정(2016~2026).pdf'):tab==='multi'?'건축학과 다전공 이수기준(2019~2027).pdf':'ABEEK_통합 공학인증프로그램_이수기준_2026.pdf';
- $('#result').innerHTML=body+'<p class="source-info">'+esc(text('기준 자료: ','Source: ')+sourceName)+'</p>';
+ $('#result').innerHTML=body;
 }

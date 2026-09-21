@@ -23,7 +23,7 @@ npm run preview
 | 이수표·검색·상세 졸업요건 | public/details.js |
 | 연도별 교과목·학점·필수 구분·졸업요건 | public/curricula.json |
 | 게시 기준일·분류 | public/guide-data.json |
-| 확인된 개정 이력 R01–R10 | public/revisions.json |
+| 내부 보관용 개정 이력 (사이트에 게시하지 않음) | docs/revisions.json |
 | 학과 로고·파비콘 원본 | public/department-logo.jpg |
 
 기존 Sites의 학생 화면과 학사 자료를 옮겼습니다. 정적 출력은 관리자 화면과 API를 포함하지 않으며, 하위 경로에서도 작동하도록 상대 주소를 사용합니다. 자료 범위는 제공 원본 기준이며 2027 사전 작성 교양 개편안은 현재 적용하지 않습니다. 영어 자료의 연도 범위는 분야별로 다릅니다.

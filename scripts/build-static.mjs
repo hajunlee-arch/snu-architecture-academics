@@ -2,7 +2,7 @@ import fs from 'node:fs';
 const out = 'site-dist';
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out);
-for (const name of ['guide.css', 'guide-data.json', 'revisions.json', 'curricula.json', 'department-logo.jpg']) {
+for (const name of ['guide.css', 'guide-data.json', 'curricula.json', 'department-logo.jpg']) {
   fs.copyFileSync(`public/${name}`, `${out}/${name}`);
 }
 const html = fs.readFileSync('public/guide.html', 'utf8')
