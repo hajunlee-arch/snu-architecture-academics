@@ -48,16 +48,14 @@ function generalCourseRows(y,en,groups){
   item('advancedMathPractice2','고급수학연습 2 (대체 선택)','Honors Calculus Practice 2 (alternative)',unspecified)
  ];
  const science=[
-  item('physics1','물리학 1','Physics 1',scienceTime),item('physicsLab1','물리학실험 1','Physics Lab 1',scienceTime),
+  item('physics1','물리학 1','Physics 1',scienceTime).concat(t('대체 과목: 물리의 기본 1 ('+generalCourseNumbers.basicPhysics1[period]+') 또는 고급물리학 1 ('+generalCourseNumbers.advancedPhysics1[period]+')','Alternatives: Foundation of Physics 1 ('+generalCourseNumbers.basicPhysics1[period]+') or Honors Physics 1 ('+generalCourseNumbers.advancedPhysics1[period]+')')),item('physicsLab1','물리학실험 1','Physics Lab 1',scienceTime),
   item('statistics','통계학','Statistics',scienceTime),item('statisticsLab','통계학실험','Statistics Lab',scienceTime),
-  item('basicPhysics1','물리의 기본 1 (물리학 1 대체 선택)','Foundation of Physics 1 (alternative to Physics 1)',scienceTime),
-  item('advancedPhysics1','고급물리학 1 (물리학 1 대체 선택)','Honors Physics 1 (alternative to Physics 1)',scienceTime),
   [unspecified,t('과학 영역 선택과목·실험 (4학점)','Science electives and labs (4 credits)'),groups[3][4]]
  ];
  const courses=[writing,[[unspecified,groups[1][2],groups[1][4]]],mathematics,science];
  const body=groups.map((group,i)=>{
   const entries=courses[i]||[[unspecified,group[2],group[4]]];
-  return entries.map(([id,name,timing],j)=>'<tr>'+(j===0?'<th scope="rowgroup" rowspan="'+entries.length+'">'+esc(group[0])+'</th><th scope="rowgroup" rowspan="'+entries.length+'">'+esc(group[1])+'</th>':'')+'<td class="ge-course-code">'+esc(id)+'</td><td>'+esc(name)+'</td>'+(j===0?'<td class="ge-area-credits" rowspan="'+entries.length+'">'+esc(group[3])+'</td>':'')+'<td>'+esc(timing)+'</td></tr>').join('');
+  return entries.map(([id,name,timing,alternative],j)=>'<tr>'+(j===0?'<th scope="rowgroup" rowspan="'+entries.length+'">'+esc(group[0])+'</th><th scope="rowgroup" rowspan="'+entries.length+'">'+esc(group[1])+'</th>':'')+'<td class="ge-course-code">'+esc(id)+'</td><td>'+esc(name)+(alternative?'<br><span class="muted">'+esc(alternative)+'</span>':'')+'</td>'+(j===0?'<td class="ge-area-credits" rowspan="'+entries.length+'">'+esc(group[3])+'</td>':'')+'<td>'+esc(timing)+'</td></tr>').join('');
  }).join('');
  return '<div class="table-wrap" role="region" tabindex="0" aria-label="'+esc(t('교양 교과목별 이수표','General education course table'))+'"><table class="general-course-table"><thead><tr>'+[t('구분','Category'),t('영역','Area'),t('교과목번호','Course number'),t('교과목·이수 기준','Course / requirement'),t('영역 이수학점','Required area credits'),t('권장 이수 시기','Recommended timing')].map(h=>'<th scope="col">'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+body+'</tbody></table></div>';
 }
